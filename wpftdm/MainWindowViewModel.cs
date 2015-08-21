@@ -14,7 +14,6 @@ namespace wpftdm
 {
     public class MainWindowViewModel:BaseViewModel
     {
-        private RunTimer clk; //This is a class which keeps track of the time being displayed
         private static string AppPath = Environment.CurrentDirectory;
         Data.IDataRepository _todoRepository;
 
@@ -93,9 +92,9 @@ namespace wpftdm
 
         public ICommand RowRightCmd { get { return (_RowRightCmd); } }
 
-        private readonly ICommand _UpdateRowPositionCmd;
+        private readonly ICommand _UpdateRowWbsCmd;
 
-        public ICommand UpdateRowPositionCmd { get { return (_UpdateRowPositionCmd); } }
+        public ICommand UpdateRowWbsCmd { get { return (_UpdateRowWbsCmd); } }
 
         private void ExecShowAppSettings(object obj)
         {
@@ -242,43 +241,44 @@ namespace wpftdm
             _RowDownCmd = new RelayCommand(ExecRowDown, CanRowDown);
             _RowRightCmd = new RelayCommand(ExecRowRight, CanRowRight);
             _RowLeftCmd = new RelayCommand(ExecRowLeft, CanRowLeft);
-            _UpdateRowPositionCmd = new RelayCommand(ExecUpdateRowPosition, CanUpdateRowPosition);
+            _UpdateRowWbsCmd = new RelayCommand(ExecUpdateRowWbs, CanUpdateRowWbs);
 
             _todoRepository = new Data.TodoRepository();
             _Todos = new ObservableCollection<Todo>(_todoRepository.List());;
-            setPosition(_Todos);
+            MainWindowUIHelper.setWbs(_Todos);
+            OnPropertyChanged("Todos");
             RunTimer.Instance.RunTimeInSecs=(AppSettings.Instance.PomodoroDurationMinutes * 60);
-        }
-
-
-
-        private void setPosition(IEnumerable<Todo> items)
-        {
-            Action<Todo> SetPostion = null;
-            SetPostion = parent =>
-            {
-                //Recursively call the SetChildren method for each child.
-                foreach (var c in items.Where(x=>x.ParentId==parent.Id))
-                {
-                    c.Position = parent.Position+">";
-                    SetPostion(c);
-                }
-            };
-            //Initialize the hierarchical list to root level items
-            foreach (var x in items.Where(x=>x.ParentId==Guid.Empty))
-	        {
-                x.Position = ">";
-                SetPostion(x);
-	        }
-            items.OrderBy(x => x.Position);
-            //return (items);
         }
 
 
 
         private void ExecRowDown(object obj)
         {
-            //Todo: Add the functionality for RowDownCmd Here
+
+            Todo thisItm = (Todo)obj;
+            int idx = _Todos.IndexOf(thisItm);
+            if (idx > 0)
+            {
+                int nextIndex = idx + 2;
+                //The next item can be child of parent and then this will lead to stackoverflow exception
+
+                //if (nextIndex < _Todos.Count())
+                //{
+                //    var parentId = _Todos[nextIndex].ParentId;
+                //    MainWindowUIHelper.setNewParent(thisItm.Id, parentId, _Todos);
+                //    OnPropertyChanged("Todos");
+
+                //    thisItm = _Todos[idx];
+                //    if (_todoRepository.Update(thisItm))
+                //    {
+                //        return;
+                //    }
+                //    else
+                //    {
+                //        var r = MessageBox.Show("Error saving updates to database!", "Error in saving data!");
+                //    }
+                //}
+            }
         }
 
         [DebuggerStepThrough]
@@ -291,6 +291,28 @@ namespace wpftdm
         private void ExecRowUp(object obj)
         {
             //Todo: Add the functionality for RowUpCmd Here
+            Todo thisItm = (Todo)obj;
+            int idx = _Todos.IndexOf(thisItm);
+            //if (idx > 0)
+            //{
+            //    int previousIndex = idx - 2;
+            //    if (previousIndex >= 0)
+            //    {
+            //        var parentId = _Todos[previousIndex].Id;
+            //        MainWindowUIHelper.setNewParent(thisItm.Id, parentId, _Todos);
+            //        OnPropertyChanged("Todos");
+
+            //        thisItm = _Todos[idx];
+            //        if (_todoRepository.Update(thisItm))
+            //        {
+            //            return;
+            //        }
+            //        else
+            //        {
+            //            var r = MessageBox.Show("Error saving updates to database!", "Error in saving data!");
+            //        }
+            //    }
+            //}
         }
 
         [DebuggerStepThrough]
@@ -309,33 +331,22 @@ namespace wpftdm
                 int parentIndex = idx - 1;
                 if (parentIndex>=0)
                 {
-                    var prnt = _Todos[parentIndex];
-                    thisItm.ParentId = prnt.Id;
-                    thisItm.Position = prnt.Position + ">";
+                    var parentId = _Todos[parentIndex].Id;
+                    MainWindowUIHelper.setNewParent(thisItm.Id, parentId, _Todos);
+                    OnPropertyChanged("Todos");
 
+                    thisItm = _Todos.FirstOrDefault(x => x.Id == thisItm.Id); ;
                     if (_todoRepository.Update(thisItm))
                     {
-                        _Todos[idx] = thisItm;
-                        updateChildren(thisItm,_Todos);
-                        OnPropertyChanged("Todos");
+                        OnPropertyChanged("CurrentTodo");
+                        return;
+                    }
+                    else
+                    {
+                       var r= MessageBox.Show("Error saving updates to database!","Error in saving data!");
                     }
                 }
             }
-        }
-
-        private void updateChildren(Todo itm,IEnumerable<Todo> lstTodo)
-        {
-            Action<Todo> UpdateChildren = null;
-            UpdateChildren = paren =>
-            {
-                foreach (var child in lstTodo.Where(x => x.ParentId == paren.Id))
-                {
-                    child.Position += ">";
-                    bool xok = (_todoRepository.Update(child));
-                    UpdateChildren(child);
-                }
-            };
-            UpdateChildren(itm);
         }
 
         [DebuggerStepThrough]
@@ -354,23 +365,21 @@ namespace wpftdm
             {
              if(thisItm.ParentId != Guid.Empty)
                 {
-                    Todo parentItm = _Todos.FirstOrDefault(x => x.Id == thisItm.ParentId);
-                    int newParentIndex = _Todos.IndexOf(parentItm) - 1;
-                    if (newParentIndex>0)
-                    {
-                        thisItm.ParentId = _Todos[newParentIndex].Id;
-                        thisItm.Position = _Todos[newParentIndex].Position + ">";
-                    }
-                    else
-                    {
-                        thisItm.ParentId = Guid.Empty;
-                        thisItm.Position = ">";
-                    }
+                 Todo parentItm = _Todos.FirstOrDefault(x => x.Id == thisItm.ParentId);
+
+                    MainWindowUIHelper.setNewParent(thisItm.Id, parentItm.ParentId, _Todos);
+                    OnPropertyChanged("Todos");
+                    thisItm = _Todos.FirstOrDefault(x => x.Id == thisItm.Id); ;
+
                  //Update database
                     if (_todoRepository.Update(thisItm))
                     {
-                        _Todos[idx] = thisItm;
-                        OnPropertyChanged("Todos");
+                        OnPropertyChanged("CurrentTodo");
+                        return;
+                    }
+                    else
+                    {
+                        var r = MessageBox.Show("Error saving updates to database!", "Error in saving data!");
                     }
                 }
             }
@@ -383,40 +392,40 @@ namespace wpftdm
             return (true);
         }
 
-        private void ExecUpdateRowPosition(object obj)
+        private void ExecUpdateRowWbs(object obj)
         {
-            //Todo: Add the functionality for UpdateRowPositionCmd Here
-            Todo thisItm = (Todo)obj;
+            //Todo: Add the functionality for UpdateRowWbsCmd Here
+            Tuple<object, object> vals = (Tuple<object, object>)obj;
+            Todo thisItm = (Todo)vals.Item1;
+            Todo targetItm = (Todo)vals.Item2;
             int idx = _Todos.IndexOf(thisItm);
             if (idx > 0)
             {
-                int newParentIndex = _Todos.IndexOf(thisItm) - 1;
-                
-                if (newParentIndex>=0)
-                {
-                    var newParent=_Todos[newParentIndex];
-                    thisItm.ParentId = newParent.Id;
-                    thisItm.Position = newParent.Position + ">";
-                }else
-                    {
-                        thisItm.ParentId = Guid.Empty;
-                        thisItm.Position = ">";
-                    }
+                int newParentIndex = _Todos.IndexOf(targetItm);
+                var parentId = targetItm.Id;
 
+                MainWindowUIHelper.setNewParent(thisItm.Id, parentId, _Todos);
+                OnPropertyChanged("Todos");
+
+                thisItm = _Todos.FirstOrDefault(x=>x.Id==thisItm.Id);
                 //Update database
                 if (_todoRepository.Update(thisItm))
                 {
-                    _Todos[idx] = thisItm;
-                    OnPropertyChanged("Todos");
+                    return;
+                }
+                else
+                {
+                    var r = MessageBox.Show("Error saving updates to database!", "Error in saving data!");
                 }
             }
         }
 
         [DebuggerStepThrough]
-        private bool CanUpdateRowPosition(object obj)
+        private bool CanUpdateRowWbs(object obj)
         {
-            //Todo: Add the checking for CanUpdateRowPosition Here
+            //Todo: Add the checking for CanUpdateRowWbs Here
             return (true);
         }
+
     }
 }

@@ -187,7 +187,7 @@ namespace wpftdm.Util
                 ICommand onDragCompletedCommand = (ICommand)element.GetValue(DragDropRowBehavior.OnDragCompletedProperty);
                 if (onDragCompletedCommand != null)
                 {
-                    onDragCompletedCommand.Execute(DraggedItem);
+                    onDragCompletedCommand.Execute(new Tuple<object,object>(DraggedItem,targetItem));
                 }
             }
 

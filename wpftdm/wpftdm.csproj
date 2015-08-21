@@ -80,6 +80,7 @@
     <Compile Include="AppSettingsWindow.xaml.cs">
       <DependentUpon>AppSettingsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MainWindowUIHelper.cs" />
     <Compile Include="Util\RunTimer.cs" />
     <Compile Include="Data\IBaseModel.cs" />
     <Compile Include="Data\IDataRepository.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="Util\Converters.cs" />
     <Compile Include="Util\DragDropRowBehavior.cs" />
     <Compile Include="Util\ListHelpers.cs" />
+    <Compile Include="Util\TodoComparer.cs" />
     <Compile Include="Util\UIHelper.cs" />
     <Compile Include="ViewModelBase.cs" />
     <Page Include="AppSettingsWindow.xaml">

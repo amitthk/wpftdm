@@ -128,18 +128,33 @@ namespace wpftdm
             }
         }
 
-        private string _Position=string.Empty;
+        private string _Wbs=string.Empty;
 
         [SterlingIgnore]        
-        public string Position
+        public string Wbs
         {
-            get { return _Position; }
+            get { return _Wbs; }
             set
             {
-                if ((null != value) && (_Position != value))
+                if ((null != value) && (_Wbs != value))
                 {
-                    _Position = value;
-                    OnPropertyChanged("Position");
+                    _Wbs = value;
+                    OnPropertyChanged("Wbs");
+                }
+            }
+        }
+
+        private int _Level;
+
+        public int Level
+        {
+            get { return _Level; }
+            set
+            {
+                if ((null != value) && (_Level != value))
+                {
+                    _Level = value;
+                    OnPropertyChanged("Level");
                 }
             }
         }

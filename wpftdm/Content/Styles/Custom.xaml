@@ -7,6 +7,12 @@
     <utl:StringToVisibilityConverter x:Key="stringToVisibilityConverter" />
     <utl:SecondsToTimeStringConverter x:Key="secondsToTimeStringConverter" />
     
+    <Style TargetType="{x:Type Label}" x:Key="h1">
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="FontWeight" Value="ExtraBold" />
+        <Setter Property="Margin" Value="0" />
+    </Style>
+    
     <Style TargetType="{x:Type Border}" x:Key="grayBgBorder">
         <!-- All rows -->
         <Setter Property="BorderBrush" Value="Gray" />
