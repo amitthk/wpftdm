@@ -1,0 +1,159 @@
+﻿<Window x:Class="wpftdm.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:utl="clr-namespace:wpftdm.Util"
+        Title="Timer" BorderThickness="1" Height="480" Width="640">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="26"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Name="grdMenuNav" Height="26">
+            <Border BorderBrush="Gray" BorderThickness="1">
+                <Menu IsMainMenu="True" Grid.Row="0" Grid.Column="0" Margin="0" Padding="5,0" Height="22" Background="White">
+                    <MenuItem Header="_File" Height="22">
+                        <MenuItem Header="_Exit" Command="{Binding ExitAppCmd}" />
+                    </MenuItem>
+                    <MenuItem Header="_Options" Command="{Binding ShowAppSettingsCmd}" Height="22" />
+                </Menu>
+            </Border>
+        </Grid>
+        <DockPanel Grid.Row="1" Grid.Column="0">
+
+
+            <Grid DockPanel.Dock="Top" Margin="50,0">
+
+                <Grid.ColumnDefinitions >
+
+                    <ColumnDefinition Width="auto"/>
+
+                    <ColumnDefinition Width="auto"/>
+
+                    <ColumnDefinition Width="auto"/>
+
+                    <ColumnDefinition Width="auto"/>
+
+                    <ColumnDefinition Width="auto"/>
+
+                    <ColumnDefinition Width="auto"/>
+
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="100"/>
+
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+
+                    <RowDefinition Height="25" />
+                    <RowDefinition Height="Auto"/>
+
+                    <RowDefinition Height="25"/>
+
+                </Grid.RowDefinitions>
+                <Label Grid.Column="0" Grid.Row="1" Content="{Binding Source={x:Static utl:RunTimer.Instance},Path=Hrs}"
+Width="30" BorderThickness="0"/>
+
+                <Label Grid.Column="1" Grid.Row="1" Content=":" Margin="1,0,4,0"/>
+
+                <Label Grid.Column="2" Grid.Row="1" Content="{Binding Source={x:Static utl:RunTimer.Instance},Path=Mins}" 
+Width="30" BorderThickness="0" Grid.ColumnSpan="2" Margin="6,0,4,0"/>
+
+                <Label Grid.Column="4" Grid.Row="1" Content=":" Margin="0,0,26,0"/>
+
+                <Label Grid.Column="4" Grid.Row="1" Content="{Binding Source={x:Static utl:RunTimer.Instance},Path=Secs}" 
+Width="30" BorderThickness="0" Margin="4,0,3,0"/>
+
+                <Button Grid.Column="5" Grid.Row="1" Content="Start" Command="{Binding StartTimerCmd}" Visibility="{Binding Source={x:Static utl:RunTimer.Instance},Path=Status, Converter={StaticResource ResourceKey=enumToVisibilityConverter}, ConverterParameter='stopped, completed'}" Grid.ColumnSpan="2" Margin="5,0,0,0" />
+
+                <Button Grid.Column="5" Grid.Row="1" Content="Reset" Command="{Binding ResetTimerCmd}" Visibility="{Binding Source={x:Static utl:RunTimer.Instance},Path=Status, Converter={StaticResource ResourceKey=enumToVisibilityConverter}, ConverterParameter='paused, running'}" Grid.ColumnSpan="2" Margin="5,0,0,0"  />
+
+                <Button Grid.Column="8" Grid.Row="1" Width="Auto" Content="{Binding IsTimerPaused}" Command="{Binding PauseTimerCmd}" Margin="0,0,225,0" Grid.ColumnSpan="2"  />
+
+                <Grid Grid.Row="0" Grid.Column="10" Grid.RowSpan="3" HorizontalAlignment="Left">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="32" />
+                        <RowDefinition Height="32" />
+                        <RowDefinition Height="32" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="43"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0" Content="Continue:" Grid.Column="0" ></Label>
+                    <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding Source={x:Static utl:RunTimer.Instance},Path=ContinuePlay}" />
+                    <Label Grid.Row="1" Grid.Column="0" Content="Status"></Label>
+                    <Label Grid.Row="1" Grid.Column="1" Content="{Binding Source={x:Static utl:RunTimer.Instance},Path=Status}" />
+                    <Label Content="Ticker:" HorizontalAlignment="Left" Grid.Row="2" VerticalAlignment="Top"/>
+                    <CheckBox Grid.Column="1" HorizontalAlignment="Left" IsChecked="{Binding Source={x:Static utl:RunTimer.Instance},Path=PlayTickerSound}" Grid.Row="2" VerticalAlignment="Top"/>
+                </Grid>
+            </Grid>
+
+            <Grid DockPanel.Dock="Bottom">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="32" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <!--  Drag and Drop Popup  -->
+                <Popup x:Name="popup1"
+           AllowsTransparency="True"
+           IsHitTestVisible="False"
+           Placement="RelativePoint"
+           PlacementTarget="{Binding ElementName=grdTodoList}">
+                    <!--  Your own Popup construction Use properties of DraggedObject inside for Binding  -->
+                    <TextBlock Margin="8,0,0,0"
+                           VerticalAlignment="Center"
+                           FontSize="14"
+                           FontWeight="Bold"
+                           Text="{Binding Path=Title}" />
+                </Popup>
+                <DataGrid x:Name="grdTodoList" ItemsSource="{Binding Todos}" SelectedItem="{Binding CurrentTodo}" AutoGenerateColumns="False" CanUserAddRows="True" CanUserDeleteRows="True" CanUserSortColumns="False" CanUserReorderColumns="False" Grid.Row="0" Grid.Column="0"
+                     SelectionMode="Single"
+                     utl:DragDropRowBehavior.Enabled="True"
+                     utl:DragDropRowBehavior.PopupControl="{Binding ElementName=popup1}"
+                     utl:DragDropRowBehavior.OnDragCompleted="{Binding UpdateRowPositionCmd}">
+                    <Control.Resources>
+                        <ResourceDictionary>
+                            <utl:StringLengthToMarginConverter x:Key="stringLengthToMarginConverter" />
+                            <Style TargetType="{x:Type DataGridCell}" x:Key="customMarginCell">
+                                <Setter Property="Margin" Value="{Binding Path=Position, Converter={StaticResource stringLengthToMarginConverter}}" />
+                            </Style>
+                        </ResourceDictionary>
+                    </Control.Resources>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="WBS" Binding="{Binding Position}" IsReadOnly="False" Width="20"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Title" Binding="{Binding Title}" CellStyle="{StaticResource ResourceKey=customMarginCell}" Width="*"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Est." Binding="{Binding Estimated}" Width="10"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Exc." Binding="{Binding Executed}" IsReadOnly="True" Width="10"></DataGridTextColumn>
+                        <DataGridTemplateColumn Header="Total Time" Width="70">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding TotalTime, Converter={StaticResource ResourceKey=secondsToTimeStringConverter}}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="Created" Binding="{Binding CreateDt}" IsReadOnly="True" Width="50"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Modified" Binding="{Binding ModifiedDt}" IsReadOnly="True" Width="50"></DataGridTextColumn>
+                    </DataGrid.Columns>
+                    <DataGrid.InputBindings>
+                        <KeyBinding Key="Up" Modifiers="Shift" Command="{Binding RowUpCmd}" CommandParameter="{Binding CurrentTodo}" />
+                        <KeyBinding Key="Down" Modifiers="Shift" Command="{Binding RowDownCmd}" CommandParameter="{Binding CurrentTodo}" />
+                        <KeyBinding Key="Left" Modifiers="Shift" Command="{Binding RowLeftCmd}" CommandParameter="{Binding CurrentTodo}" />
+                        <KeyBinding Key="Right" Modifiers="Shift" Command="{Binding RowRightCmd}" CommandParameter="{Binding CurrentTodo}" />
+                    </DataGrid.InputBindings>
+
+                </DataGrid>
+                <Button Grid.Row="1" Grid.Column="0" Content="Save" Command="{Binding SaveTodoListCmd}" Width="50" HorizontalAlignment="Right"  />
+            </Grid>
+
+        </DockPanel>
+    </Grid>
+</Window>

@@ -1,0 +1,9 @@
+# Ignore everything
+*
+
+# Except these files...
+!.gitignore
+!repositories.config
+
+# Rule applies to subdirectories also
+!*/

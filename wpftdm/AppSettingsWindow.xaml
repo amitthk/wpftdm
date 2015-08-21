@@ -1,0 +1,19 @@
+﻿<Window x:Class="wpftdm.AppSettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Application Settings" Height="300" Width="500">
+
+        <UniformGrid Rows="7" Columns="2">
+            <Label Content="Pomodoro Duration"/>
+            <TextBox TextWrapping="Wrap" Text="{Binding PomodoroDurationMinutes}"/>
+            <Label Content="Rest Duration"/>
+            <TextBox TextWrapping="Wrap" Text="{Binding RestDurationMinutes}"/>
+            <Label Content="App. Base Path"/>
+            <TextBlock TextWrapping="WrapWithOverflow"  Text="{Binding AppBasePath}" />
+            <Label Content="Data Path"/>
+            <TextBlock TextWrapping="WrapWithOverflow" Text="{Binding DataPath}"/>
+            <Label Content="Save: " />
+            <Button Content="Save" Command="{Binding SaveAppSettingsCmd}" Width="50" />
+        </UniformGrid>
+        
+</Window>
