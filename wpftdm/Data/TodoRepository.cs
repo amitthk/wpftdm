@@ -29,6 +29,7 @@ namespace wpftdm.Data
 
         public bool Update(Todo todo)
         {
+            todo.ModifiedDt = DateTime.Now;
             App.databaseInstance.SaveAsync(todo);
             App.databaseInstance.FlushAsync();
             return true;

@@ -69,7 +69,7 @@ namespace wpftdm.Util
             }
         }
 
-        private bool _PlayTickerSound;
+        private bool _PlayTickerSound=true;
 
         public bool PlayTickerSound
         {
@@ -80,6 +80,21 @@ namespace wpftdm.Util
                 {
                     _PlayTickerSound = value;
                     OnPropertyChanged("PlayTickerSound");
+                }
+            }
+        }
+
+        private bool _PlayCompletionSound=true;
+
+        public bool PlayCompletionSound
+        {
+            get { return _PlayCompletionSound; }
+            set
+            {
+                if ((null != value) && (_PlayCompletionSound != value))
+                {
+                    _PlayCompletionSound = value;
+                    OnPropertyChanged("PlayCompletionSound");
                 }
             }
         }
@@ -145,6 +160,36 @@ namespace wpftdm.Util
             }
         }
 
+        private string _TickerSoundPath=AppConstants.TickerSoundDefaultPath;
+
+        public string TickerSoundPath
+        {
+            get { return _TickerSoundPath; }
+            set
+            {
+                if ((null != value) && (_TickerSoundPath != value))
+                {
+                    _TickerSoundPath = value;
+                    OnPropertyChanged("TickerSoundPath");
+                }
+            }
+        }
+
+        private string _CompletionSoundPath=AppConstants.CompletionSoundDefaultPath;
+
+        public string CompletionSoundPath
+        {
+            get { return _CompletionSoundPath; }
+            set
+            {
+                if ((null != value) && (_CompletionSoundPath != value))
+                {
+                    _CompletionSoundPath = value;
+                    OnPropertyChanged("CompletionSoundPath");
+                }
+            }
+        }
+
         private static System.Windows.Threading.DispatcherTimer _timerClock;
 
         private static RunTimer _instance;
@@ -184,7 +229,7 @@ namespace wpftdm.Util
             Decrement();
             if ((Status == TimerStatus.running)&&(PlayTickerSound))
             {
-                string fullPathToSound = System.IO.Path.Combine(AppConstants.AppBasePath, @"Content\Media\clock-tick1.wav");
+                string fullPathToSound = TickerSoundPath;
                 SoundPlayer player = new SoundPlayer(fullPathToSound);
                 player.Play();
 
@@ -198,13 +243,31 @@ namespace wpftdm.Util
             {
                 if (Status==TimerStatus.running)
                 {
+                    if (PlayCompletionSound)
+                    {
+                        string fullPathToSound = CompletionSoundPath;
+                        SoundPlayer player = new SoundPlayer(fullPathToSound);
+                        player.Play();
+                    }
                     ResetToRest();
-                    Resume();
                 }
                 else if(Status==TimerStatus.resting)
                 {
-                    ResetToRun();
-                    Resume();
+                    if (PlayCompletionSound)
+                    {
+                        string fullPathToSound = CompletionSoundPath;
+                        SoundPlayer player = new SoundPlayer(fullPathToSound);
+                        player.Play();
+                    }
+
+                    if (ContinuePlay)
+                    {
+                        ResetToRun();
+                    }
+                    else
+                    {
+                        Stop();
+                    }
                 }
             }
 
@@ -275,14 +338,16 @@ namespace wpftdm.Util
         {
             _timerClock.Stop();
             setTimeInSeconds(RunTimeInSecs);
-            Status = TimerStatus.stopped;
+            Status = TimerStatus.running;
+            _timerClock.Start();
         }
 
         private void ResetToRest()
         {
             _timerClock.Stop();
             setTimeInSeconds(RestTimeInSecs);
-            Status = TimerStatus.stopped;
+            Status = TimerStatus.resting;
+            _timerClock.Start();
         }
 
         public void Dispose()

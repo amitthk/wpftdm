@@ -44,7 +44,7 @@
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="150"/>
 
                 </Grid.ColumnDefinitions>
 
@@ -68,26 +68,27 @@
 
                 <Button Grid.Column="5" Grid.Row="1" Height="24" Width="60" VerticalAlignment="Center" Content="Start" Command="{Binding StartTimerCmd}" Visibility="{Binding Source={x:Static utl:RunTimer.Instance},Path=Status, Converter={StaticResource ResourceKey=enumToVisibilityConverter}, ConverterParameter='stopped, completed'}" Margin="0" />
 
-                <Button Grid.Column="5" Grid.Row="1" Height="24" Width="60" VerticalAlignment="Center" Content="Reset" Command="{Binding ResetTimerCmd}" Visibility="{Binding Source={x:Static utl:RunTimer.Instance},Path=Status, Converter={StaticResource ResourceKey=enumToVisibilityConverter}, ConverterParameter='paused, running'}" Margin="0"  />
+                <Button Grid.Column="5" Grid.Row="1" Height="24" Width="60" VerticalAlignment="Center" Content="Reset" Command="{Binding ResetTimerCmd}" Visibility="{Binding Source={x:Static utl:RunTimer.Instance},Path=Status, Converter={StaticResource ResourceKey=enumToVisibilityConverter}, ConverterParameter='resting, running'}" Margin="0"  />
 
                 <Button Grid.Column="6" Grid.Row="1" Height="24"  Width="60" VerticalAlignment="Center" Content="{Binding IsTimerPaused}" Command="{Binding PauseTimerCmd}" Margin="0"  />
 
-                <Grid Grid.Row="0" Grid.Column="10" Grid.RowSpan="3" HorizontalAlignment="Left">
+                <Grid Grid.Row="0" Grid.Column="10" Grid.RowSpan="3">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="32" />
-                        <RowDefinition Height="32" />
-                        <RowDefinition Height="32" />
+                        <RowDefinition Height="24" />
+                        <RowDefinition Height="24" />
+                        <RowDefinition Height="24" />
+                        <RowDefinition Height="24"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
-                        <ColumnDefinition Width="43"/>
+                        <ColumnDefinition Width="90"/>
                     </Grid.ColumnDefinitions>
-                    <Label Grid.Row="0" Content="Continue:" Grid.Column="0" ></Label>
-                    <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding Source={x:Static utl:RunTimer.Instance},Path=ContinuePlay}" />
-                    <Label Grid.Row="1" Grid.Column="0" Content="Status"></Label>
-                    <Label Grid.Row="1" Grid.Column="1" Content="{Binding Source={x:Static utl:RunTimer.Instance},Path=Status}" />
-                    <Label Content="Ticker:" HorizontalAlignment="Left" Grid.Row="2" VerticalAlignment="Top"/>
-                    <CheckBox Grid.Column="1" HorizontalAlignment="Left" IsChecked="{Binding Source={x:Static utl:RunTimer.Instance},Path=PlayTickerSound}" Grid.Row="2" VerticalAlignment="Top"/>
+                    <Label Grid.Row="0" Content="Continue:" Grid.Column="0" VerticalAlignment="Center" Height="16" Margin="0,4,0,0" ></Label>
+                    <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding Source={x:Static utl:RunTimer.Instance},Path=ContinuePlay}" VerticalAlignment="Center" Height="16" Margin="0,4,0,0" />
+                    <Label Grid.Row="1" Grid.Column="0" Content="Status" VerticalAlignment="Center" Height="16" Margin="0,10,0,4"></Label>
+                    <Label Grid.Row="1" Grid.Column="1" Content="{Binding Source={x:Static utl:RunTimer.Instance},Path=Status}" Style="{StaticResource h3}" VerticalAlignment="Top" Height="31" Margin="0,0,-25,0" Grid.RowSpan="2" />
+                    <Label Content="Ticker:" HorizontalAlignment="Left" Grid.Row="2" VerticalAlignment="Center" Height="16" Margin="0,0,0,12" Width="34" Grid.RowSpan="2"/>
+                    <CheckBox Grid.Column="1" HorizontalAlignment="Left" IsChecked="{Binding Source={x:Static utl:RunTimer.Instance},Path=PlayTickerSound}" Grid.Row="2" VerticalAlignment="Center" Height="16" Margin="0,0,0,12" Width="19" Grid.RowSpan="2"/>
                 </Grid>
             </Grid>
 

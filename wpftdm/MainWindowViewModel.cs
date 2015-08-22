@@ -127,18 +127,32 @@ namespace wpftdm
         private void ExecSaveTodoList(object obj)
         {
             //Todo: Add the functionality for SaveTodoListCmd Here
+            saveAllTodos();
+            OnPropertyChanged("Todos");
+        }
+
+        private void saveAllTodos()
+        {
+            var old = _todoRepository.List();
+
             foreach (var item in Todos)
             {
-                if (_todoRepository.Get(item.Id)!=null)
+                if (_todoRepository.Get(item.Id) != null)
                 {
                     _todoRepository.Update(item);
                 }
                 else
                 {
-                    var guid= _todoRepository.Add(item);
+                    var guid = _todoRepository.Add(item);
                 }
             }
-            OnPropertyChanged("Todos");
+
+            var todel = old.Where(x => !(Todos.Select(y => y.Id).Contains(x.Id))).Select(z=>z.Id);
+
+            foreach (var item in todel)
+            {
+                _todoRepository.Delete(item);
+            }
         }
 
         [DebuggerStepThrough]
@@ -195,7 +209,8 @@ namespace wpftdm
                 OnPropertyChanged("Todos");
             }
 
-            RunTimer.Instance.RunTimeInSecs=AppSettings.Instance.PomodoroDurationMinutes * 60;
+            RunTimer.Instance.RunTimeInSecs = AppSettings.Instance.PomodoroDurationMinutes * 60;
+            RunTimer.Instance.RestTimeInSecs = AppSettings.Instance.RestDurationMinutes * 60;
             RunTimer.Instance.Stop();
         }
 
@@ -324,6 +339,7 @@ namespace wpftdm
 
         private void ExecRowRight(object obj)
         {
+            saveAllTodos();
             Todo thisItm = (Todo)obj;
             int idx = _Todos.IndexOf(thisItm);
             if (idx > 0)
@@ -359,6 +375,7 @@ namespace wpftdm
 
         private void ExecRowLeft(object obj)
         {
+            saveAllTodos();
             Todo thisItm = (Todo)obj;
             int idx = _Todos.IndexOf(thisItm);
             if (idx > 0 )
@@ -399,12 +416,15 @@ namespace wpftdm
             Todo thisItm = (Todo)vals.Item1;
             Todo targetItm = (Todo)vals.Item2;
             int idx = _Todos.IndexOf(thisItm);
-            if (idx > 0)
+            if (idx >= 0)
             {
-                int newParentIndex = _Todos.IndexOf(targetItm);
-                var parentId = targetItm.Id;
+                //Item is already inserted to target by the DragDropBehavior
+                thisItm.ParentId = targetItm.Id;
+                thisItm.Wbs = targetItm.Wbs + ">";
 
-                MainWindowUIHelper.setNewParent(thisItm.Id, parentId, _Todos);
+                
+
+                MainWindowUIHelper.updateChildren(thisItm, Todos);
                 OnPropertyChanged("Todos");
 
                 thisItm = _Todos.FirstOrDefault(x=>x.Id==thisItm.Id);

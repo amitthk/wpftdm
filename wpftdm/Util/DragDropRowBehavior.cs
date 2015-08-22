@@ -171,12 +171,11 @@ namespace wpftdm.Util
                 //get target index
                 var targetIndex = ((dataGrid).ItemsSource as IList).IndexOf(targetItem);
 
-                //remove the source from the list
-                ((dataGrid).ItemsSource as IList).Remove(DraggedItem);
-
                 //move source at the target's location
                 if (targetIndex >= 0)
                 {
+                    //remove the source from the list
+                    ((dataGrid).ItemsSource as IList).Remove(DraggedItem);
                     ((dataGrid).ItemsSource as IList).Insert(targetIndex, DraggedItem);
                 }
 

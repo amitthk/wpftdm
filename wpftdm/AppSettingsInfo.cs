@@ -10,5 +10,7 @@ namespace wpftdm
     {
         public int PomodoroDurationMinutes { get; set; }
         public int RestDurationMinutes { get; set; }
+        public string CompletionSoundPath { get; set; }
+        public string TickerSoundPath { get; set; }
     }
 }

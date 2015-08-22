@@ -20,7 +20,19 @@ namespace wpftdm
                 {
                     var child = children[tmp];
                     child.Wbs = parent.Wbs + ">";
-                    items.Move(items.IndexOf(child), items.IndexOf(parent) + 1);
+                    int newIdx = items.IndexOf(parent) + 1;
+
+                    if (newIdx <= items.Count)
+                    {
+                        items.Remove(child);
+                        items.Insert(newIdx, child);
+                    }
+                    else if (newIdx==items.Count+1)
+                    {
+                        items.Remove(child);
+                        items.Add(child);
+                    }
+
                     SetPostion(child);
                 }
             };
@@ -45,14 +57,15 @@ namespace wpftdm
                 var prnt = _Todos.FirstOrDefault(x => x.Id == parentId);
                 thisItm.ParentId = prnt.Id;
                 thisItm.Wbs = prnt.Wbs + ">";
-                int newIdx = _Todos.IndexOf(prnt) + 1;
-                if (newIdx < _Todos.Count)
+                int newIdx = _Todos.IndexOf(prnt)+1;
+                if (newIdx <= _Todos.Count)
                 {
-                    _Todos.Move(_Todos.IndexOf(thisItm), newIdx);
+                    _Todos.Remove(thisItm);
+                    _Todos.Insert(newIdx, thisItm);
                 }
                 else
                 {
-                    _Todos.RemoveAt(_Todos.IndexOf(thisItm));
+                    _Todos.Remove(thisItm);
                     _Todos.Add(thisItm);
                 }
             }
@@ -79,15 +92,16 @@ namespace wpftdm
                     var child = children[tmp];
                     child.Wbs = parent.Wbs + ">";
 
-                    int newIdx=lstTodo.IndexOf(parent)+1;
-
-                    if (newIdx<lstTodo.Count)
-	                {
-                        lstTodo.Move(lstTodo.IndexOf(child), newIdx);
-                    }
-                    else
+                    int newIdx = lstTodo.IndexOf(parent)+1;
+                    //Count is already one short
+                    if (newIdx <= lstTodo.Count)
                     {
-                        lstTodo.RemoveAt(lstTodo.IndexOf(child));
+                        lstTodo.Remove(child);
+                        lstTodo.Insert(newIdx, child);
+                    }
+                    else if (newIdx==lstTodo.Count+1)
+                    {
+                        lstTodo.Remove(child);
                         lstTodo.Add(child);
                     }
 

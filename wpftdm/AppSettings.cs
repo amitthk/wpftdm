@@ -30,12 +30,14 @@ namespace wpftdm
            if ((_settingsInfo.PomodoroDurationMinutes == 0)&&((_persister.objList==null)||(_persister.objList.Count<=0)))
            {
 
-                   var tmp = new AppSettingsInfo() { PomodoroDurationMinutes=AppConstants.PomodoroDurationMinutesDefault, RestDurationMinutes=AppConstants.RestDurationMinutesDefault };
+                   var tmp = new AppSettingsInfo() { PomodoroDurationMinutes=AppConstants.PomodoroDurationMinutesDefault, RestDurationMinutes=AppConstants.RestDurationMinutesDefault, CompletionSoundPath=AppConstants.CompletionSoundDefaultPath, TickerSoundPath=AppConstants.TickerSoundDefaultPath };
                    _persister.objList.Add(tmp);
                    _persister.save();
 
                    _settingsInfo.PomodoroDurationMinutes = AppConstants.PomodoroDurationMinutesDefault;
                    _settingsInfo.RestDurationMinutes = AppConstants.RestDurationMinutesDefault;
+                   _settingsInfo.CompletionSoundPath = AppConstants.CompletionSoundDefaultPath;
+                   _settingsInfo.TickerSoundPath = AppConstants.TickerSoundDefaultPath;
            }
            else
            {
