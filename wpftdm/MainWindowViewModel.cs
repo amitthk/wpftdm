@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using wpftdm.Data;
 using wpftdm.Util;
 
 namespace wpftdm
@@ -95,6 +96,10 @@ namespace wpftdm
         private readonly ICommand _UpdateRowWbsCmd;
 
         public ICommand UpdateRowWbsCmd { get { return (_UpdateRowWbsCmd); } }
+        
+        private readonly ICommand _ExportToExcelCmd;
+
+        public ICommand ExportToExcelCmd { get { return (_ExportToExcelCmd); } }
 
         private void ExecShowAppSettings(object obj)
         {
@@ -123,6 +128,19 @@ namespace wpftdm
             return (true);
         }
 
+        private void ExecExportToExcel(object obj)
+        {
+            ExportToExcel<Todo,TodoList> s = new ExportToExcel<Todo, TodoList>();
+            s.dataToPrint = Todos.ToList();
+            s.GenerateReport();
+        }
+
+        [DebuggerStepThrough]
+        private bool CanExportToExcel(object obj)
+        {
+            //Todo: Add the checking for CanExitApp Here
+            return (true);
+        }
 
         private void ExecSaveTodoList(object obj)
         {
@@ -257,6 +275,8 @@ namespace wpftdm
             _RowRightCmd = new RelayCommand(ExecRowRight, CanRowRight);
             _RowLeftCmd = new RelayCommand(ExecRowLeft, CanRowLeft);
             _UpdateRowWbsCmd = new RelayCommand(ExecUpdateRowWbs, CanUpdateRowWbs);
+            _ExportToExcelCmd = new RelayCommand(ExecExportToExcel, CanExportToExcel);
+            
 
             _todoRepository = new Data.TodoRepository();
             _Todos = new ObservableCollection<Todo>(_todoRepository.List());;
@@ -422,9 +442,13 @@ namespace wpftdm
                 thisItm.ParentId = targetItm.Id;
                 thisItm.Wbs = targetItm.Wbs + ">";
 
-                
+                Debug.Write(string.Format("\n\n****Now Moving child {0} under parent {1} ****",thisItm.Title,targetItm.Title));
+                Debug.Write("\nThis item index: "+Todos.IndexOf(thisItm));
+                Debug.Write("\nParent item index: "+Todos.IndexOf(targetItm));
 
                 MainWindowUIHelper.updateChildren(thisItm, Todos);
+                
+                Debug.Write("*****Done Moving Child****\n\n");
                 OnPropertyChanged("Todos");
 
                 thisItm = _Todos.FirstOrDefault(x=>x.Id==thisItm.Id);

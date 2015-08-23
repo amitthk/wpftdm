@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,13 +22,19 @@ namespace wpftdm
                     var child = children[tmp];
                     child.Wbs = parent.Wbs + ">";
                     int newIdx = items.IndexOf(parent) + 1;
+                    int oldChildIdx = items.IndexOf(child);
 
-                    if (newIdx <= items.Count)
+                    if (newIdx < items.Count)
                     {
                         items.Remove(child);
+                        
+                        if (newIdx>oldChildIdx) {
+                        	newIdx-=1;
+                        }
+                        
                         items.Insert(newIdx, child);
                     }
-                    else if (newIdx==items.Count+1)
+                    else if (newIdx==items.Count)
                     {
                         items.Remove(child);
                         items.Add(child);
@@ -86,28 +93,42 @@ namespace wpftdm
             Action<Todo> UpdateChildren = null;
             UpdateChildren = parent =>
             {
+            	Debug.Write("\n UpdateChildren: parent "+parent.Title+" index: " +lstTodo.IndexOf(parent));
                 var children = lstTodo.Where(x => x.ParentId == parent.Id).ToList();
                 for (int tmp = 0; tmp <= children.Count - 1;tmp++ )
                 {
                     var child = children[tmp];
                     child.Wbs = parent.Wbs + ">";
+                	Debug.Write(",  child "+child.Title+" index: "+lstTodo.IndexOf(child) +"\n");
 
+                int oldChildIdx = lstTodo.IndexOf(child);
                     int newIdx = lstTodo.IndexOf(parent)+1;
                     //Count is already one short
-                    if (newIdx <= lstTodo.Count)
+                    if (newIdx < lstTodo.Count)
                     {
+                    	
                         lstTodo.Remove(child);
+                        
+                        if(newIdx>oldChildIdx){
+                        	newIdx-=1;
+                        }
+                        
                         lstTodo.Insert(newIdx, child);
+                        Debug.Write(string.Format("\n Move {0} from {1} => {2} \n",child.Title, oldChildIdx,newIdx));
                     }
-                    else if (newIdx==lstTodo.Count+1)
+                    else
                     {
                         lstTodo.Remove(child);
                         lstTodo.Add(child);
+                        Debug.Write(string.Format("\n Added {0} from {1} (end of the list) => {2} \n",child.Title, oldChildIdx,newIdx));
                     }
-
+                    
+                    Debug.Write(string.Format("\n New Indexes: Parent {0} -> Index {1}, Child {2} -> Index {3} \n",parent.Title,lstTodo.IndexOf(parent), child.Title, lstTodo.IndexOf(child)));
+                    
                     UpdateChildren(child);
                 }
             };
+            Debug.Write("\n Calling UpdateChildren on :"+itm.Title +"\n");
             UpdateChildren(itm);
         }
     }

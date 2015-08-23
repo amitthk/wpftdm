@@ -10,19 +10,6 @@ namespace wpftdm
 {
     public class Todo : BaseViewModel
     {
-        public Guid Id
-        {
-            get { return base.Id; }
-            set
-            {
-                if ((null != value) && (base.Id != value))
-                {
-                    base.Id = value;
-                    OnPropertyChanged("Id");
-                }
-            }
-        }
-
         private string _Title;
 
         public string Title
@@ -166,4 +153,6 @@ namespace wpftdm
         }
 
     }
+    
+    public class TodoList :List<Todo>{}
 }

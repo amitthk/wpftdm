@@ -1,4 +1,4 @@
-﻿<Window x:Class="wpftdm.MainWindow"
+<Window x:Class="wpftdm.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:utl="clr-namespace:wpftdm.Util"
@@ -113,7 +113,7 @@
                            FontWeight="Bold"
                            Text="{Binding Path=Title}" />
                 </Popup>
-                <DataGrid x:Name="grdTodoList" ItemsSource="{Binding Todos}" SelectedItem="{Binding CurrentTodo}" SelectionMode="Single" AutoGenerateColumns="False" CanUserAddRows="True" CanUserDeleteRows="True" CanUserSortColumns="False" CanUserReorderColumns="False" Grid.Row="0" Grid.Column="0"
+                <DataGrid IsEnabled="{Binding Source={x:Static utl:RunTimer.Instance},Path=Status, Converter={StaticResource ResourceKey=enumToBoolConverter}, ConverterParameter='stopped, completed'}" x:Name="grdTodoList" ItemsSource="{Binding Todos}" SelectedItem="{Binding CurrentTodo}" SelectionMode="Single" AutoGenerateColumns="False" CanUserAddRows="True" CanUserDeleteRows="True" CanUserSortColumns="False" CanUserReorderColumns="False" Grid.Row="0" Grid.Column="0"
                      IsSynchronizedWithCurrentItem="True"
                      utl:DragDropRowBehavior.Enabled="True"
                      utl:DragDropRowBehavior.PopupControl="{Binding ElementName=popup1}"
@@ -150,7 +150,11 @@
                     </DataGrid.InputBindings>
 
                 </DataGrid>
-                <Button Grid.Row="1" Grid.Column="0" Content="Save" Command="{Binding SaveTodoListCmd}" Width="50" HorizontalAlignment="Right"  />
+            	<StackPanel Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" Orientation="Horizontal" Height="32">
+            	<Button  Content="Save" Command="{Binding SaveTodoListCmd}" Width="50"  Height="32" />
+                <Button  Content="Export" Command="{Binding ExportToExcelCmd}" Width="50" Height="32"  />
+            	</StackPanel>
+
             </Grid>
 
         </DockPanel>

@@ -158,25 +158,36 @@ namespace wpftdm.Util
         /// </summary>
         private static void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (!IsDragging || IsEditing)
+            if (!IsDragging || IsEditing || ( DraggedItem.ToString()=="{NewItemPlaceholder}"))
             {
                 return;
             }
+           
+            IList itemsSource = ((dataGrid).ItemsSource as IList);
 
             //get the target item
             var targetItem = dataGrid.SelectedItem;
 
-            if ((targetItem == null || !ReferenceEquals(DraggedItem, targetItem))&&( DraggedItem.ToString()!="{NewItemPlaceholder}"))
+            if (targetItem == null || !ReferenceEquals(DraggedItem, targetItem))
             {
                 //get target index
-                var targetIndex = ((dataGrid).ItemsSource as IList).IndexOf(targetItem);
+                var targetIndex = itemsSource.IndexOf(targetItem)+1;
 
                 //move source at the target's location
                 if (targetIndex >= 0)
                 {
+                	if(targetIndex<itemsSource.Count){
+                		int origIdx = itemsSource.IndexOf(DraggedItem);
                     //remove the source from the list
-                    ((dataGrid).ItemsSource as IList).Remove(DraggedItem);
-                    ((dataGrid).ItemsSource as IList).Insert(targetIndex, DraggedItem);
+                    itemsSource.Remove(DraggedItem);
+                    if (targetIndex>origIdx) {
+                    	targetIndex-=1;
+                    }
+                    itemsSource.Insert(targetIndex, DraggedItem);
+                	}else{
+                		itemsSource.Remove(DraggedItem);
+                		itemsSource.Add(DraggedItem);
+                	}
                 }
 
                 //select the dropped item

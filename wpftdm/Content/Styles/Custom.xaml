@@ -6,6 +6,7 @@
     <utl:EnumToVisibilityConverter x:Key="enumToVisibilityConverter" />
     <utl:StringToVisibilityConverter x:Key="stringToVisibilityConverter" />
     <utl:SecondsToTimeStringConverter x:Key="secondsToTimeStringConverter" />
+	<utl:EnumToBoolConverter x:Key="enumToBoolConverter" />
     
     <Style TargetType="{x:Type Label}" x:Key="h1">
         <Setter Property="FontSize" Value="20" />

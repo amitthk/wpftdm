@@ -38,6 +38,7 @@
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Controls.Input.Toolkit">
@@ -80,6 +81,7 @@
     <Compile Include="AppSettingsWindow.xaml.cs">
       <DependentUpon>AppSettingsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Data\ExportToExcel.cs" />
     <Compile Include="MainWindowUIHelper.cs" />
     <Compile Include="Util\RunTimer.cs" />
     <Compile Include="Data\IBaseModel.cs" />
