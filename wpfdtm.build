@@ -1,0 +1,112 @@
+<project name="MyBuild" default="oneclickbuild" basedir="." xmlns="http://nant.sourceforge.net/release/0.92/nant.xsd">
+<property name="MSBuildPath" value="C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe" />
+<property name="NugetPath" value="C:\Apps\tools\nuget\NuGet" overwrite="true" />
+
+
+    <property name="basedir" value="${project::get-base-directory()}" />
+    <tstamp>
+	<formatter property="NOW" pattern="yyyyMMdd_HHmm_ss" />
+	</tstamp>
+	
+    <property name="BuildFolder" value="${basedir+'\builds\workspace'}" />
+    <property name="ReleaseFolder" value="${basedir+'\builds\release\'+NOW}" />
+	<property name="SolutionFile" value="wpftdm.sln" />
+	<property name="buildLogFileName" value="builds\myproject_build.log" overwrite="false" />
+	<property name="DeleteBuildsOlderThan" value="-1" />
+	
+	<script prefix="utils" language="C#">
+    <code><![CDATA[
+				[Function("delete-dir-older-than")]
+				public static string DeleteDirsOlderThan(string BaseDir, System.DateTime CutoffDate) {
+					System.Collections.ArrayList deletedDirs = new System.Collections.ArrayList();
+					string[] theDirs = System.IO.Directory.GetDirectories( BaseDir );
+					for ( int theCurrentIdx = 0; theCurrentIdx < theDirs.Length; ++theCurrentIdx )
+					{
+						System.DateTime theCurrentDirCreateTime = System.IO.Directory.GetCreationTime( theDirs[ theCurrentIdx ] );
+						if ( theCurrentDirCreateTime >= CutoffDate )
+						{
+						deletedDirs.Add(theDirs[theCurrentIdx]);
+						System.IO.Directory.Delete(theDirs[theCurrentIdx],true);
+						}
+					}
+					return(string.Join(",",deletedDirs.ToArray()));
+				}
+             ]]></code>
+  </script>
+	
+  <target name="oneclickbuild">
+	<call target="clean" />
+    <call target="showconfig" />
+	<call target="nugetrestore" />
+    <call target="build" />
+  </target>
+  
+  <target name="clean" description="remove all generated files">
+    <echo message="Cleaning up/Deleting workspace directory ${BuildFolder}" />
+	<delete dir="${BuildFolder}">
+    </delete>
+    <mkdir dir="${BuildFolder}">
+    </mkdir>
+	
+	<property name="StaleBuilds" value="${datetime::now() + timespan::from-days(DeleteBuildsOlderThan)}" />
+	<echo message="Deleting releases older than ${StaleBuilds}" />
+	<property name="DeletedBuildDirs" value="${utils::delete-dir-older-than(basedir+'\builds\release',StaleBuilds)}" />
+	<echo message="Deleted following Directories: ${DeletedBuildDirs}" />
+	
+    <echo message="Creating ReleaseFolder directory ${ReleaseFolder}" />
+    <mkdir dir="${ReleaseFolder}">
+    </mkdir>
+  </target>
+  
+    <target name="showconfig">
+    <echo message="${'****=========****Showing Current Build Configuration****=========****'}" />
+    <echo message="${'BuildFolder: ['+BuildFolder+']'}" />
+    <echo message="${'ReleaseFolder: ['+ReleaseFolder+']'}" />
+  </target>
+  
+  <target name="nugetrestore" description="Restores the nuget packages">
+    <exec program="${NugetPath}">
+      <arg line="restore ${basedir+'\'+SolutionFile}" />
+    </exec>
+  </target>
+  
+    <target name="build" description="Compiles the .Net solution">
+    <!-- build the solution -->
+    <echo message="Building ${project::get-name()}" />
+    <echo message="OutputPath ${BuildFolder}" />
+    <!-- need nant.contrib.tasks.dll if we use msbuild task from NAntcontrib. We're not using it currently -->
+    <!--<loadtasks assembly="C:/Program Files/nantcontrib/bin/NAnt.Contrib.Tasks.dll" />-->
+    <exec program="${MSBuildPath}">
+      <arg line="${basedir+'\'+SolutionFile}" />
+      <arg line="/property:Configuration=Release" />
+      <arg line="/p:OutputPath=${BuildFolder}" />
+      <arg value="/target:Rebuild" />
+      <arg value="/fileLogger" />
+      <arg value="/fileLoggerParameters:LogFile=${basedir+'\'+buildLogFileName};verbosity=diagnostic" />
+      <arg value="/nologo" />
+    </exec>
+    <copy todir="${ReleaseFolder}">
+      <fileset basedir="${BuildFolder}">
+        <include name="**/*" />
+      </fileset>
+    </copy>
+    <foreach item="File" property="filename">
+      <in>
+        <items casesensitive="false">
+          <include name="${ReleaseFolder+'\*\Web.config'}" />
+        </items>
+      </in>
+      <do>
+        <echo message="${'rename '+filename}" />
+        <move file="${filename}" tofile="${path::combine(path::get-directory-name(filename), path::get-file-name-without-extension(filename) + 'SVN.config')}">
+          <!--<filterchain>
+            <replacestring from="${mimsdb.passwordtomask1}" to="xxxxxxxx" ignorecase="true" />
+          </filterchain>-->
+        </move>
+      </do>
+    </foreach>
+  </target>
+  
+  
+  
+</project>
