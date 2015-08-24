@@ -73,6 +73,10 @@ namespace wpftdm
 
         public ICommand ExitAppCmd { get { return (_ExitAppCmd); } }
 
+        private readonly ICommand _MinimizeToTrayCmd;
+
+        public ICommand MinimizeToTrayCmd { get { return (_MinimizeToTrayCmd); } }
+
         private readonly ICommand _ShowAppSettingsCmd;
 
         public ICommand ShowAppSettingsCmd { get { return (_ShowAppSettingsCmd); } }
@@ -119,6 +123,23 @@ namespace wpftdm
         private void ExecExitApp(object obj)
         {
             System.Windows.Application.Current.Shutdown();
+        }
+
+        //These methods are checked again & again in loop, so we will step through them while debugging
+        [DebuggerStepThrough]
+        private bool CanMinimizeToTray(object obj)
+        {
+            return (true);
+        }
+
+        private void ExecMinimizeToTrayCmd(object obj)
+        {
+            var win = (Window)obj;
+
+            var notifyIcon = NotifyIconHelper.Instance.GetIcon(win);
+
+            notifyIcon.Visible = true;
+            win.Hide();
         }
 
         [DebuggerStepThrough]
@@ -269,6 +290,7 @@ namespace wpftdm
             _PauseTimerCmd = new RelayCommand(ExecPauseTimer, CanPauseTimer);
             _SaveTodoListCmd = new RelayCommand(ExecSaveTodoList, CanSaveTodoList);
             _ExitAppCmd = new RelayCommand(ExecExitApp, CanExitApp);
+            _MinimizeToTrayCmd = new RelayCommand(ExecMinimizeToTrayCmd, CanMinimizeToTray);
             _ShowAppSettingsCmd = new RelayCommand(ExecShowAppSettings, CanShowAppSettings);
             _RowUpCmd = new RelayCommand(ExecRowUp, CanRowUp);
             _RowDownCmd = new RelayCommand(ExecRowDown, CanRowDown);
