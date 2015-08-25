@@ -105,6 +105,25 @@ namespace wpftdm
 
         public ICommand ExportToExcelCmd { get { return (_ExportToExcelCmd); } }
 
+        private readonly ICommand _ShowHelpCmd;
+
+        public ICommand ShowHelpCmd { get { return (_ShowHelpCmd); } }
+
+
+        private void ExecShowHelp(object obj)
+        {
+            //Todo: Add the functionality for ShowHelpCmd Here
+            var helpPop = new wpftdm.Views.Help();
+            helpPop.ShowDialog();
+        }
+
+        [DebuggerStepThrough]
+        private bool CanShowHelp(object obj)
+        {
+            //Todo: Add the checking for CanShowHelp Here
+            return (true);
+        }
+
         private void ExecShowAppSettings(object obj)
         {
             //Todo: Add the functionality for ShowAppSettingsCmd Here
@@ -298,7 +317,7 @@ namespace wpftdm
             _RowLeftCmd = new RelayCommand(ExecRowLeft, CanRowLeft);
             _UpdateRowWbsCmd = new RelayCommand(ExecUpdateRowWbs, CanUpdateRowWbs);
             _ExportToExcelCmd = new RelayCommand(ExecExportToExcel, CanExportToExcel);
-            
+            _ShowHelpCmd = new RelayCommand(ExecShowHelp, CanShowHelp);
 
             _todoRepository = new Data.TodoRepository();
             _Todos = new ObservableCollection<Todo>(_todoRepository.List());;

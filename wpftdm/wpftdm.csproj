@@ -67,15 +67,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AppConstants.cs" />
-    <Compile Include="AppSettings.cs" />
-    <Compile Include="AppSettingsInfo.cs" />
-    <Compile Include="AppSettingsViewModel.cs" />
-    <Compile Include="AppSettingsWindow.xaml.cs">
+    <Compile Include="Core\AppConstants.cs" />
+    <Compile Include="ViewModels\AppSettings.cs" />
+    <Compile Include="ViewModels\AppSettingsInfo.cs" />
+    <Compile Include="ViewModels\AppSettingsViewModel.cs" />
+    <Compile Include="ViewModels\HelpViewModel.cs" />
+    <Compile Include="Views\AppSettingsWindow.xaml.cs">
       <DependentUpon>AppSettingsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Data\ExportToExcel.cs" />
-    <Compile Include="MainWindowUIHelper.cs" />
+    <Compile Include="ViewModels\MainWindowUIHelper.cs" />
     <Compile Include="Util\NotifyIconHelper.cs" />
     <Compile Include="Util\RunTimer.cs" />
     <Compile Include="Data\IBaseModel.cs" />
@@ -85,16 +86,19 @@
     <Compile Include="Data\TodoRepository.cs" />
     <Compile Include="Data\TypeSerializer.cs" />
     <Compile Include="Data\XmlPersister.cs" />
-    <Compile Include="MainWindowViewModel.cs" />
-    <Compile Include="RelayCommand.cs" />
-    <Compile Include="Task.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="Core\RelayCommand.cs" />
+    <Compile Include="Data\Task.cs" />
     <Compile Include="Util\Converters.cs" />
     <Compile Include="Util\DragDropRowBehavior.cs" />
     <Compile Include="Util\ListHelpers.cs" />
     <Compile Include="Util\TodoComparer.cs" />
     <Compile Include="Util\UIHelper.cs" />
-    <Compile Include="ViewModelBase.cs" />
-    <Page Include="AppSettingsWindow.xaml">
+    <Compile Include="Core\ViewModelBase.cs" />
+    <Compile Include="Views\Help.xaml.cs">
+      <DependentUpon>Help.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Views\AppSettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -110,7 +114,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -118,10 +122,14 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\Help.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

@@ -13,15 +13,15 @@
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Name="grdMenuNav" Height="26">
             <Border BorderBrush="Gray" BorderThickness="1">
-                <Menu IsMainMenu="True" Grid.Row="0" Grid.Column="0" Margin="0" Padding="5,0" Height="22" Background="White">
-                    <MenuItem Header="_File" Height="22">
+                <Menu IsMainMenu="True" Grid.Row="0" Grid.Column="0" Margin="0" Padding="5,0" Height="26" Background="White">
+                    <MenuItem Header="_File" Height="26">
                         <MenuItem Header="Minimize to _Tray" Command="{Binding MinimizeToTrayCmd}" CommandParameter="{Binding ElementName=MainWindowView}" />
                         <MenuItem Header="_Exit" Command="{Binding ExitAppCmd}" />
                     </MenuItem>
-                    <MenuItem Header="_Tools" Height="22">
-                        <MenuItem Header="_Options" Command="{Binding ShowAppSettingsCmd}" Height="22" />
+                    <MenuItem Header="_Tools" Height="26">
+                        <MenuItem Header="_Options" Command="{Binding ShowAppSettingsCmd}" Height="26" />
                     </MenuItem>
-
+                    <MenuItem Header="_Help" Command="{Binding ShowHelpCmd}" />
 
                 </Menu>
             </Border>

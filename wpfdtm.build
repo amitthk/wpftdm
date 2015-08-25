@@ -19,16 +19,18 @@
 				[Function("delete-dir-older-than")]
 				public static string DeleteDirsOlderThan(string BaseDir, System.DateTime CutoffDate) {
 					System.Collections.ArrayList deletedDirs = new System.Collections.ArrayList();
-					string[] theDirs = System.IO.Directory.GetDirectories( BaseDir );
-					for ( int theCurrentIdx = 0; theCurrentIdx < theDirs.Length; ++theCurrentIdx )
-					{
-						System.DateTime theCurrentDirCreateTime = System.IO.Directory.GetCreationTime( theDirs[ theCurrentIdx ] );
-						if ( theCurrentDirCreateTime >= CutoffDate )
+					if(System.IO.Directory.Exists(BaseDir)){
+						string[] theDirs = System.IO.Directory.GetDirectories( BaseDir );
+						for ( int theCurrentIdx = 0; theCurrentIdx < theDirs.Length; ++theCurrentIdx )
 						{
-						deletedDirs.Add(theDirs[theCurrentIdx]);
-						System.IO.Directory.Delete(theDirs[theCurrentIdx],true);
+							System.DateTime theCurrentDirCreateTime = System.IO.Directory.GetCreationTime( theDirs[ theCurrentIdx ] );
+							if ( theCurrentDirCreateTime >= CutoffDate )
+							{
+							deletedDirs.Add(theDirs[theCurrentIdx]);
+							System.IO.Directory.Delete(theDirs[theCurrentIdx],true);
+							}
 						}
-					}
+					}	
 					return(string.Join(",",deletedDirs.ToArray()));
 				}
              ]]></code>
