@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using wpftdm.Util;
 
 namespace wpftdm
 {
@@ -58,6 +59,11 @@ namespace wpftdm
             AppSettings.Instance.PomodoroDurationMinutes = PomodoroDurationMinutes;
             AppSettings.Instance.RestDurationMinutes = RestDurationMinutes;
             AppSettings.Save();
+            if ((RunTimer.Instance.Status != TimerStatus.running) && (RunTimer.Instance.Status != TimerStatus.running) && ((RunTimer.Instance.Status != TimerStatus.paused)))
+            {
+                RunTimer.Instance.RunTimeInSecs = PomodoroDurationMinutes * 60;
+                RunTimer.Instance.RestTimeInSecs = RestDurationMinutes * 60;
+            }
             System.Windows.MessageBox.Show("Settings were saved!", "Settings Saved!", System.Windows.MessageBoxButton.OK);
         }
 

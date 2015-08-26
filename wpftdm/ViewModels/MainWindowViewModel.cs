@@ -43,6 +43,7 @@ namespace wpftdm
                 if ((null != value) && (_CurrentTodo != value))
                 {
                     _CurrentTodo = value;
+                    //ExecUpdateTodo(value);
                     OnPropertyChanged("CurrentTodo");
                 }
             }
@@ -108,6 +109,11 @@ namespace wpftdm
         private readonly ICommand _ShowHelpCmd;
 
         public ICommand ShowHelpCmd { get { return (_ShowHelpCmd); } }
+
+        private readonly ICommand _UpdateTodoCmd;
+
+        public ICommand UpdateTodoCmd { get { return (_UpdateTodoCmd); } }
+
 
 
         private void ExecShowHelp(object obj)
@@ -186,7 +192,6 @@ namespace wpftdm
         {
             //Todo: Add the functionality for SaveTodoListCmd Here
             saveAllTodos();
-            OnPropertyChanged("Todos");
         }
 
         private void saveAllTodos()
@@ -195,14 +200,17 @@ namespace wpftdm
 
             foreach (var item in Todos)
             {
-                if (_todoRepository.Get(item.Id) != null)
-                {
-                    _todoRepository.Update(item);
-                }
-                else
-                {
-                    var guid = _todoRepository.Add(item);
-                }
+                    if (_todoRepository.Get(item.Id) != null)
+                    {
+                        _todoRepository.Update(item);
+                        item.IsDirty = false;
+                    }
+                    else
+                    {
+                        item.Wbs = ">";
+                        var guid = _todoRepository.Add(item);
+                        item.IsDirty = false;
+                    }
             }
 
             var todel = old.Where(x => !(Todos.Select(y => y.Id).Contains(x.Id))).Select(z=>z.Id);
@@ -212,6 +220,35 @@ namespace wpftdm
                 _todoRepository.Delete(item);
             }
         }
+
+        private void ExecUpdateTodo(object obj)
+        {
+            //Todo: Add the functionality for UpdateTodoCmd Here
+            if (obj != null)
+            {
+                var item = (Todo)obj;
+                if (_todoRepository.Get(item.Id) != null)
+                {
+                    _todoRepository.Update(item);
+                    item.IsDirty = false;
+                }
+                else
+                {
+                    item.Wbs = ">";
+                    var guid = _todoRepository.Add(item);
+                    item.IsDirty = false;
+                }
+                Todos[Todos.IndexOf(item)] = item;
+            }
+        }
+
+        [DebuggerStepThrough]
+        private bool CanUpdateTodo(object obj)
+        {
+            //Todo: Add the checking for CanUpdateTodo Here
+            return (true);
+        }
+
 
         [DebuggerStepThrough]
         private bool CanSaveTodoList(object obj)
@@ -263,8 +300,11 @@ namespace wpftdm
             if (CurrentTodo!=null)
             {
                 CurrentTodo.TotalTime += RunTimer.Instance.ElapsedSecs;
-                _todoRepository.Update(CurrentTodo);
-                OnPropertyChanged("Todos");
+                if (_todoRepository.Update(CurrentTodo))
+                {
+                    CurrentTodo.IsDirty = false;
+                    Todos[Todos.IndexOf(CurrentTodo)] = CurrentTodo;
+                }
             }
 
             RunTimer.Instance.RunTimeInSecs = AppSettings.Instance.PomodoroDurationMinutes * 60;
@@ -318,12 +358,18 @@ namespace wpftdm
             _UpdateRowWbsCmd = new RelayCommand(ExecUpdateRowWbs, CanUpdateRowWbs);
             _ExportToExcelCmd = new RelayCommand(ExecExportToExcel, CanExportToExcel);
             _ShowHelpCmd = new RelayCommand(ExecShowHelp, CanShowHelp);
+            _UpdateTodoCmd = new RelayCommand(ExecUpdateTodo, CanUpdateTodo);
 
             _todoRepository = new Data.TodoRepository();
-            _Todos = new ObservableCollection<Todo>(_todoRepository.List());;
+            loadAllTodos();
+            RunTimer.Instance.RunTimeInSecs=(AppSettings.Instance.PomodoroDurationMinutes * 60);
+        }
+
+        private void loadAllTodos()
+        {
+            _Todos = new ObservableCollection<Todo>(_todoRepository.List()); ;
             MainWindowUIHelper.setWbs(_Todos);
             OnPropertyChanged("Todos");
-            RunTimer.Instance.RunTimeInSecs=(AppSettings.Instance.PomodoroDurationMinutes * 60);
         }
 
 
@@ -400,7 +446,7 @@ namespace wpftdm
 
         private void ExecRowRight(object obj)
         {
-            saveAllTodos();
+            //saveAllTodos();
             Todo thisItm = (Todo)obj;
             int idx = _Todos.IndexOf(thisItm);
             if (idx > 0)
@@ -415,6 +461,7 @@ namespace wpftdm
                     thisItm = _Todos.FirstOrDefault(x => x.Id == thisItm.Id); ;
                     if (_todoRepository.Update(thisItm))
                     {
+                        thisItm.IsDirty = false;
                         OnPropertyChanged("CurrentTodo");
                         return;
                     }
@@ -436,7 +483,7 @@ namespace wpftdm
 
         private void ExecRowLeft(object obj)
         {
-            saveAllTodos();
+            //saveAllTodos();
             Todo thisItm = (Todo)obj;
             int idx = _Todos.IndexOf(thisItm);
             if (idx > 0 )
@@ -452,6 +499,7 @@ namespace wpftdm
                  //Update database
                     if (_todoRepository.Update(thisItm))
                     {
+                        thisItm.IsDirty = false;
                         OnPropertyChanged("CurrentTodo");
                         return;
                     }
@@ -477,7 +525,7 @@ namespace wpftdm
             Todo thisItm = (Todo)vals.Item1;
             Todo targetItm = (Todo)vals.Item2;
             int idx = _Todos.IndexOf(thisItm);
-            if (idx >= 0)
+            if ((targetItm!=null)&&(idx >= 0))
             {
                 //Item is already inserted to target by the DragDropBehavior
                 thisItm.ParentId = targetItm.Id;
@@ -496,6 +544,7 @@ namespace wpftdm
                 //Update database
                 if (_todoRepository.Update(thisItm))
                 {
+                    thisItm.IsDirty = false;
                     return;
                 }
                 else

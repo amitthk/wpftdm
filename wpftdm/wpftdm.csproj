@@ -68,6 +68,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Core\AppConstants.cs" />
+    <Compile Include="Core\DependencyObjectExtensions.cs" />
+    <Compile Include="Core\EventToCommand.cs" />
     <Compile Include="ViewModels\AppSettings.cs" />
     <Compile Include="ViewModels\AppSettingsInfo.cs" />
     <Compile Include="ViewModels\AppSettingsViewModel.cs" />

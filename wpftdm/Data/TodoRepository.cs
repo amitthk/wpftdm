@@ -8,17 +8,25 @@ namespace wpftdm.Data
 {
     public class TodoRepository :IDataRepository
     {
+        private object todoUpdateLockObj = new object();
+
         public Guid Add(Todo todo)
         {
-          var guid =App.databaseInstance.SaveAsync(todo).Result;
-          App.databaseInstance.FlushAsync();
-          return ((Guid)guid);
+            lock (todoUpdateLockObj)
+            {
+                var guid = Task.Run(async () => { object td = await App.databaseInstance.SaveAsync(todo); return td; }).Result;
+                //Task.Run(async () => { await App.databaseInstance.FlushAsync(); });
+                return ((Guid)guid);
+            }
         }
 
         public void Delete(Guid id)
         {
-            App.databaseInstance.DeleteAsync(typeof(Todo), id);
-            App.databaseInstance.FlushAsync();
+            lock (todoUpdateLockObj)
+            {
+                Task.Run(async () => { await App.databaseInstance.DeleteAsync(typeof(Todo), id); });
+                //Task.Run(async () => { await App.databaseInstance.FlushAsync(); });
+            }
         }
 
         public List<Todo> List()
@@ -29,15 +37,18 @@ namespace wpftdm.Data
 
         public bool Update(Todo todo)
         {
-            todo.ModifiedDt = DateTime.Now;
-            App.databaseInstance.SaveAsync(todo);
-            App.databaseInstance.FlushAsync();
+            lock (todoUpdateLockObj)
+            {
+                todo.ModifiedDt = DateTime.Now;
+                Task.Run(async () => { await App.databaseInstance.SaveAsync(todo); });
+                //Task.Run(async () => { await App.databaseInstance.FlushAsync(); });
+            }
             return true;
         }
 
         public Todo Get(Guid id)
         {
-            var todo = App.databaseInstance.LoadAsync<Todo>(id).Result;
+            var todo =  Task.Run(async () => { object td = await App.databaseInstance.LoadAsync<Todo>(id); return td;}).Result;
             if (todo != null)
             {
                 return ((Todo)todo);
