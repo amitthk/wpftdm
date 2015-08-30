@@ -1,25 +1,41 @@
-﻿using System;
+﻿using Raven.Client;
+using Raven.Client.Embedded;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Wintellect.Sterling.Core.Database;
 
 namespace wpftdm.Data
 {
-    public class TodoDatabaseInstance : BaseDatabaseInstance
+    public class TodoDatabase
     {
-        public const string DATAINDEX = "IndexData";
+        public static IDocumentStore _instance;
 
-        protected override List<ITableDefinition> RegisterTables()
+        public static IDocumentStore Instance
         {
-            return new List<ITableDefinition>
-                       {
-                           CreateTableDefinition<Todo, Guid>(testModel => testModel.Id)
-                               .WithIndex<Todo, string, Guid>(DATAINDEX, t => t.Title)
-                               .WithIndex<Todo, DateTime, string, Guid>("IndexDateData",
-                                                                            t => Tuple.Create(t.CreateDt, t.Title))                                                     
-                       };
+            get
+            {
+                if (_instance!=null)
+                {
+                    return (_instance);
+                }
+
+                lock (typeof(TodoDatabase))
+                {
+                    if (_instance!=null)
+                    {
+                        return (_instance);
+                    }
+
+                    _instance = new EmbeddableDocumentStore
+                    {
+                        DataDirectory = AppSettings.Instance.AppDataPath,
+                        UseEmbeddedHttpServer=false
+                    };
+                    return (_instance);
+                }
+            }
         }
     }    
 }

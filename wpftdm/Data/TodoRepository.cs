@@ -14,9 +14,8 @@ namespace wpftdm.Data
         {
             lock (todoUpdateLockObj)
             {
-                var guid = Task.Run(async () => { object td = await App.databaseInstance.SaveAsync(todo); return td; }).Result;
-                //Task.Run(async () => { await App.databaseInstance.FlushAsync(); });
-                return ((Guid)guid);
+                App.DocumentSession.Store(todo);
+                return (todo.Id);
             }
         }
 
@@ -24,14 +23,13 @@ namespace wpftdm.Data
         {
             lock (todoUpdateLockObj)
             {
-                Task.Run(async () => { await App.databaseInstance.DeleteAsync(typeof(Todo), id); });
-                //Task.Run(async () => { await App.databaseInstance.FlushAsync(); });
+                App.DocumentSession.Delete<Todo>(id);
             }
         }
 
         public List<Todo> List()
         {
-            var vals= from k in App.databaseInstance.Query<Todo, Guid>() orderby k.LazyValue.Value.CreateDt select k.LazyValue.Value;
+            var vals= from k in App.DocumentSession.Query<Todo>().Customize(x=>x.WaitForNonStaleResultsAsOfNow()) orderby k.CreateDt select k;
             return (vals.ToList());
         }
 
@@ -40,15 +38,15 @@ namespace wpftdm.Data
             lock (todoUpdateLockObj)
             {
                 todo.ModifiedDt = DateTime.Now;
-                Task.Run(async () => { await App.databaseInstance.SaveAsync(todo); });
-                //Task.Run(async () => { await App.databaseInstance.FlushAsync(); });
+                App.DocumentSession.Store(todo);
+                //Task.Run(async () => { await App.DocumentSession.FlushAsync(); });
             }
             return true;
         }
 
         public Todo Get(Guid id)
         {
-            var todo =  Task.Run(async () => { object td = await App.databaseInstance.LoadAsync<Todo>(id); return td;}).Result;
+            var todo = App.DocumentSession.Load<Todo>(id);
             if (todo != null)
             {
                 return ((Todo)todo);

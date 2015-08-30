@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Raven.Imports.Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
-using Wintellect.Sterling.Core.Serialization;
 
 
 namespace wpftdm
@@ -18,7 +18,7 @@ namespace wpftdm
 
         private bool _IsDirty;
 
-        [SterlingIgnore]
+        [JsonIgnore]
         public virtual bool IsDirty
         {
             get { return _IsDirty; }

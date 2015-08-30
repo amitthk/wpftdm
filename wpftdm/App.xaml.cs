@@ -1,5 +1,6 @@
 ﻿using log4net.Config;
 using log4net.Repository.Hierarchy;
+using Raven.Client;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -8,7 +9,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
-using Wintellect.Sterling.Core;
 
 namespace wpftdm
 {
@@ -18,11 +18,8 @@ namespace wpftdm
     public partial class App : Application
     {
         private static Logger _log;
-        public static SterlingEngine engine;
-        public static ISterlingDatabaseInstance databaseInstance;
-        private SterlingDefaultLogger _logger;
-        private ISterlingDriver _driver;
-        private ISterlingPlatformAdapter _adapter;
+        public static IDocumentStore DocumentStore;
+        public static IDocumentSession DocumentSession;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -33,23 +30,20 @@ namespace wpftdm
 
         protected override void OnExit(ExitEventArgs e)
         {
-            if (_logger != null)
+            using (DocumentSession)
             {
-                _logger.Detach();
+                if (DocumentSession!=null)
+                {
+                    DocumentSession.SaveChanges();
+                }
             }
-            
-            engine.Dispose();
-            databaseInstance = null;
             base.OnExit(e);
         }
 
         private void ConfigureDatabase()
         {
-            _adapter = new Wintellect.Sterling.Server.PlatformAdapter();
-            engine = new SterlingEngine(_adapter);
-            engine.Activate();
-            _driver= new Wintellect.Sterling.Server.FileSystem.FileSystemDriver(AppConstants.AppDataPath);
-            databaseInstance = engine.SterlingDatabase.RegisterDatabase<Data.TodoDatabaseInstance>("WpfdtmDb", _driver);
+            wpftdm.Data.TodoDatabase.Instance.Initialize();
+            DocumentSession = wpftdm.Data.TodoDatabase.Instance.OpenSession();
         }
 
          void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)

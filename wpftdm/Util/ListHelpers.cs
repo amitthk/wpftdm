@@ -21,6 +21,12 @@ namespace wpftdm.Util
             }
         }
 
+        public static List<T> Traverse<T>(this List<T> items,
+Func<T, List<T>> childSelector)
+        {
+            return Traverse(items, childSelector).ToList<T>();
+        }
+
         public static void MoveForward<T>(this List<T> list, Predicate<T> itemSelector, bool isLastToBeginning)
         {
             if (list==null)

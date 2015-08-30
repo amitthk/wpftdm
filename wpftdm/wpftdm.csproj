@@ -39,7 +39,17 @@
       <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Office.Interop.Excel" />
+    <Reference Include="Raven.Abstractions">
+      <HintPath>..\packages\RavenDB.Database.3.0.3690\lib\net45\Raven.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Raven.Client.Lightweight">
+      <HintPath>..\packages\RavenDB.Client.3.0.3690\lib\net45\Raven.Client.Lightweight.dll</HintPath>
+    </Reference>
+    <Reference Include="Raven.Database">
+      <HintPath>..\packages\RavenDB.Database.3.0.3690\lib\net45\Raven.Database.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -54,13 +64,6 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="Wintellect.Sterling.Core">
-      <HintPath>..\ExtLib\Wintellect.Sterling.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Wintellect.Sterling.Server, Version=1.6.2.32154, Culture=neutral, PublicKeyToken=1bbdf8b93e4a1081, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ExtLib\Wintellect.Sterling.Server.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -83,10 +86,8 @@
     <Compile Include="Util\RunTimer.cs" />
     <Compile Include="Data\IBaseModel.cs" />
     <Compile Include="Data\IDataRepository.cs" />
-    <Compile Include="Data\IdentityTrigger.cs" />
     <Compile Include="Data\TodoDatabase.cs" />
     <Compile Include="Data\TodoRepository.cs" />
-    <Compile Include="Data\TypeSerializer.cs" />
     <Compile Include="Data\XmlPersister.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Core\RelayCommand.cs" />

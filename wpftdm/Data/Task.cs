@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Raven.Imports.Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Wintellect.Sterling.Core.Serialization;
 
 namespace wpftdm
 {
@@ -117,7 +117,7 @@ namespace wpftdm
 
         private string _Wbs=string.Empty;
 
-        [SterlingIgnore]        
+        [JsonIgnore]     
         public string Wbs
         {
             get { return _Wbs; }

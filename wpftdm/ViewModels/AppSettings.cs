@@ -90,5 +90,15 @@ namespace wpftdm
            get { return _settingsInfo.RestDurationMinutes; }
            set { _settingsInfo.RestDurationMinutes = value; }
        }
+
+
+       private string _appDataPath=AppConstants.AppDataPath;
+
+       public string AppDataPath
+       {
+           get { return _appDataPath; }
+           set { _appDataPath = value; }
+       }
+
     }
 }
