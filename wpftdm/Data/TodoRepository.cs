@@ -23,6 +23,7 @@ namespace wpftdm.Data
         {
             lock (todoUpdateLockObj)
             {
+                if (App.DocumentSession.Load<Todo>(id) != null)
                 App.DocumentSession.Delete<Todo>(id);
             }
         }
@@ -54,6 +55,18 @@ namespace wpftdm.Data
             else
             {
                 return null;
+            }
+        }
+
+
+        public void Delete(Todo todo)
+        {
+            lock (todoUpdateLockObj)
+            {
+                if (App.DocumentSession.Load<Todo>(todo.Id)!=null)
+                {
+                    App.DocumentSession.Delete<Todo>(todo);
+                }
             }
         }
     }

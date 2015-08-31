@@ -9,6 +9,7 @@ namespace wpftdm.Data
     {
         Guid Add(Todo todo);
         void Delete(Guid id);
+        void Delete(Todo id);
         List<Todo> List();
         bool Update(Todo todo);
         Todo Get(Guid id);

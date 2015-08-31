@@ -153,6 +153,7 @@
                             <KeyBinding Key="Down" Modifiers="Shift" Command="{Binding RowDownCmd}" CommandParameter="{Binding CurrentTodo}" />
                             <KeyBinding Key="Left" Modifiers="Shift" Command="{Binding RowLeftCmd}" CommandParameter="{Binding CurrentTodo}" />
                             <KeyBinding Key="Right" Modifiers="Shift" Command="{Binding RowRightCmd}" CommandParameter="{Binding CurrentTodo}" />
+                            <KeyBinding Key="Delete" Command="{Binding DeleteRowCmd}" CommandParameter="{Binding CurrentTodo}" />
                             <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveTodoListCmd}" />
                         </DataGrid.InputBindings>
 

@@ -114,7 +114,41 @@ namespace wpftdm
 
         public ICommand UpdateTodoCmd { get { return (_UpdateTodoCmd); } }
 
+        private readonly ICommand _DeleteRowCmd;
 
+        public ICommand DeleteRowCmd { get { return (_DeleteRowCmd); } }
+
+
+        private void ExecDeleteRow(object obj)
+        {
+            //Todo: Add the functionality for DeleteRowCmd Here
+            //Todo: Add the functionality for UpdateTodoCmd Here
+            if ((obj != null) && (!string.IsNullOrWhiteSpace(((Todo)obj).Title)))
+            {
+                var item = (Todo)obj;
+
+                if (Todos.IndexOf(item) >= 0)
+                {
+                    if (Todos.Where(k=>k.ParentId==item.Id).Any())
+                    {
+                        var lst = Todos.Where(k => k.ParentId == item.Id).ToList();
+                        for (int i = 0; i < lst.Count(); i++)
+                        {
+                            ExecRowLeft(lst[i]);
+                        }
+                    }
+                    _todoRepository.Delete(item);
+                    Todos.RemoveAt(Todos.IndexOf(item));
+                }
+            }
+        }
+
+        [DebuggerStepThrough]
+        private bool CanDeleteRow(object obj)
+        {
+            //Todo: Add the checking for CanDeleteRow Here
+            return (true);
+        }
 
         private void ExecShowHelp(object obj)
         {
@@ -224,7 +258,7 @@ namespace wpftdm
         private void ExecUpdateTodo(object obj)
         {
             //Todo: Add the functionality for UpdateTodoCmd Here
-            if (obj != null)
+            if ((obj != null)&&(!string.IsNullOrWhiteSpace(((Todo)obj).Title)))
             {
                 var item = (Todo)obj;
                 if (_todoRepository.Get(item.Id) != null)
@@ -238,7 +272,11 @@ namespace wpftdm
                     var guid = _todoRepository.Add(item);
                     item.IsDirty = false;
                 }
-                Todos[Todos.IndexOf(item)] = item;
+
+                if (Todos.IndexOf(item)>=0)
+                {
+                    Todos[Todos.IndexOf(item)] = item;
+                }
             }
         }
 
@@ -359,6 +397,7 @@ namespace wpftdm
             _ExportToExcelCmd = new RelayCommand(ExecExportToExcel, CanExportToExcel);
             _ShowHelpCmd = new RelayCommand(ExecShowHelp, CanShowHelp);
             _UpdateTodoCmd = new RelayCommand(ExecUpdateTodo, CanUpdateTodo);
+            _DeleteRowCmd = new RelayCommand(ExecDeleteRow, CanDeleteRow);
 
             _todoRepository = new Data.TodoRepository();
             loadAllTodos();
