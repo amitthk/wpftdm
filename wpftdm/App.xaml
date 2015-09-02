@@ -4,6 +4,7 @@
              StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
+            <vm:ViewModelLocator x:Shared="False"  x:Key="Locator" xmlns:vm="clr-namespace:wpftdm.Core" />
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Content\Styles\BureauBlue.xaml" />
                 <ResourceDictionary Source="Content\Styles\Custom.xaml" />

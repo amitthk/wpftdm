@@ -13,7 +13,7 @@ namespace wpftdm
         public static int PomodoroDurationMinutesDefault { get { return (25); } }
         public static int RestDurationMinutesDefault { get { return (5); } }
 
-        public static string AppDataPath { get { return (System.IO.Path.Combine(AppConstants.AppBasePath, "Db")); } }
+        public static string AppDataPath { get { return (System.IO.Path.Combine(AppConstants.AppBasePath, "DATA\\Db")); } }
         public static string CompletionSoundDefaultPath { get { return (System.IO.Path.Combine(AppConstants.AppBasePath, @"Content\Media\TripleBeep.wav")); } }
         public static string TickerSoundDefaultPath { get { return (System.IO.Path.Combine(AppConstants.AppBasePath, @"Content\Media\clock-tick1.wav")); } }
     }

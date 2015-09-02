@@ -72,11 +72,16 @@
     </ApplicationDefinition>
     <Compile Include="Core\AppConstants.cs" />
     <Compile Include="Core\DependencyObjectExtensions.cs" />
+    <Compile Include="Core\EventAggregator.cs" />
     <Compile Include="Core\EventToCommand.cs" />
+    <Compile Include="Core\IEventAggregator.cs" />
+    <Compile Include="Core\Messages.cs" />
+    <Compile Include="Core\ViewModelLocator.cs" />
     <Compile Include="ViewModels\AppSettings.cs" />
     <Compile Include="ViewModels\AppSettingsInfo.cs" />
     <Compile Include="ViewModels\AppSettingsViewModel.cs" />
     <Compile Include="ViewModels\HelpViewModel.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\AppSettingsWindow.xaml.cs">
       <DependentUpon>AppSettingsWindow.xaml</DependentUpon>
     </Compile>
@@ -89,7 +94,7 @@
     <Compile Include="Data\TodoDatabase.cs" />
     <Compile Include="Data\TodoRepository.cs" />
     <Compile Include="Data\XmlPersister.cs" />
-    <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\HomeViewModel.cs" />
     <Compile Include="Core\RelayCommand.cs" />
     <Compile Include="Data\Task.cs" />
     <Compile Include="Util\Converters.cs" />
@@ -117,6 +122,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Home.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -124,6 +133,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Views\Home.xaml.cs">
+      <DependentUpon>Home.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -165,6 +177,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Images\Home.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Media\clock-tick1.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

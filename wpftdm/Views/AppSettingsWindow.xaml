@@ -3,7 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Application Settings" Height="300" Width="500">
 
-        <UniformGrid Rows="7" Columns="2">
+    <TabControl>
+        <TabItem Header="Pomodoro" Width="Auto" Height="Auto">
+            <UniformGrid Rows="7" Columns="2" Width="Auto" Height="Auto">
             <Label Content="Pomodoro Duration"/>
             <TextBox TextWrapping="Wrap" Text="{Binding PomodoroDurationMinutes}"/>
             <Label Content="Rest Duration"/>
@@ -15,5 +17,8 @@
             <Label Content="Save: " />
             <Button Content="Save" Command="{Binding SaveAppSettingsCmd}" Width="50" />
         </UniformGrid>
+        </TabItem>
+    </TabControl>
+
         
 </Window>

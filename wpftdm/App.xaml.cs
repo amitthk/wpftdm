@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using wpftdm.Core;
 
 namespace wpftdm
 {
@@ -18,8 +19,9 @@ namespace wpftdm
     public partial class App : Application
     {
         private static Logger _log;
-        public static IDocumentStore DocumentStore;
         public static IDocumentSession DocumentSession;
+        public static IEventAggregator EventAggregator { get; private set; }
+
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -60,6 +62,7 @@ namespace wpftdm
             _log.AddAppender(CreateFileAppender("FileAppender", System.IO.Path.Combine(Environment.CurrentDirectory, "wpftdm.log")));
             log4net.GlobalContext.Properties["LogFolderLocation"] = Environment.CurrentDirectory;
             BasicConfigurator.Configure();
+            EventAggregator = new EventAggregator();
         }
 
         // Create a new file appender
